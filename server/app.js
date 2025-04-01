@@ -31,20 +31,37 @@ app.use(cors());
 // ...
 app.get("/docs", (req, res) => {
   res.sendFile(__dirname + "/views/docs.html");
-});
-app.get("/api/cohorts", (req, res) => {
-  res.json(cohorts);
-});
-app.get("/api/students", (req, res) => {
-  res.json(students);
+  return;
 });
 
-// START SERVER
+app.get("/api/cohorts", (req, res) => {
+  Cohorts.find()
+    .then(allCohorts => {
+      res.status(200).json(allCohorts);
+      return;
+    })
+    .catch(error => {
+      res.status(500).json({ errorMessage: "Error retrieving cohorts", error });
+      return;
+    });
+});
+
+app.get("/api/students", (req, res) => {
+  Students.find()
+    .then(allStudents => {
+      res.status(200).json(allStudents);
+      return;
+    })
+    .catch(error => {
+      res.status(500).json({ errorMessage: "Error retrieving students", error });
+      return;
+    });
+});
+
+// START SERVER // never have a return inside the server function
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
-
-
 
 
 // Connecting to the Database
