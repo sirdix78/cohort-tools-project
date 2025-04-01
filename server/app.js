@@ -5,6 +5,9 @@ const PORT = 5005;
 const cohorts = require("./api/cohorts.json");
 const students = require("./api/students.json");
 const cors = require("cors");
+const mongoose = require("mongoose"); // Connecting to the Database
+const Cohorts = require("./models/cohorts.model");
+const Students = require("./models/students.model");
 
 // STATIC DATA
 // Devs Team - Import the provided files with JSON data of students and cohorts here:
@@ -40,3 +43,14 @@ app.get("/api/students", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
 });
+
+
+
+
+// Connecting to the Database
+mongoose
+  .connect("mongodb://127.0.0.1:27017/cohort-tools-api")
+  .then(x => console.log(`Connected to Database: "${x.connections[0].name}"`))
+  .catch(err => console.error("Error connecting to MongoDB", err));
+
+// ...
