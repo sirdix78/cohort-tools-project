@@ -1,3 +1,4 @@
+require("dotenv").config()
 const express = require("express");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
@@ -8,6 +9,8 @@ const cors = require("cors");
 const mongoose = require("mongoose"); // Connecting to the Database
 const Cohort = require("./models/cohorts.model");
 const Student = require("./models/students.model");
+const authRoutes = require('./routes/auth.routes');
+
 const {
   errorHandler,
   notFoundHandler,
@@ -24,7 +27,7 @@ const app = express();
 mongoose
   .connect("mongodb://127.0.0.1:27017/cohort-tools-api")
   .then((x) => console.log(`Connected to Database: "${x.connections[0].name}"`))
-  .catch((err) => console.error("Error connecting to MongoDB", err));
+  .catch((error) => console.error("Error connecting to MongoDB", error));
 
 // ...
 
@@ -37,6 +40,9 @@ app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors());
+
+// Mount the auth routes
+app.use('/', authRoutes);
 
 // ROUTES - https://expressjs.com/en/starter/basic-routing.html
 // Devs Team - Start working on the routes here:
@@ -72,7 +78,7 @@ app.post("/api/students", async (req, res, next) => {
       console.log("good job", createdStudent);
       res.status(201).json(createdStudent);
     })
-    .catch((err) => {
+    .catch((error) => {
       // console.log(err);
       // res.status(500).json({ errorMessage: "Problem creating student" });
       next(error);
@@ -89,7 +95,7 @@ app.get("/api/students/cohort/:cohortId", (req, res, next) => {
       res.status(200).json(studentsInCohort);
     })
     .catch((err) => {
-      console.log(err);
+      console.log(error);
       // res
       //   .status(500)
       //   .json({ errorMessage: "Problem finding students in this cohort" });
@@ -106,7 +112,7 @@ app.get("/api/students/:studentId", (req, res, next) => {
       console.log("here is one student", oneStudent);
       res.status(200).json(oneStudent);
     })
-    .catch((err) => {
+    .catch((error) => {
       // console.log(err);
       // res.status(500).json({ errorMessage: "trouble finding the one student" });
       next(error);
@@ -122,7 +128,7 @@ app.put("/api/students/:studentId", async (req, res, next) => {
     );
     console.log("here is the updated student:", updatedStudent);
     res.status(200).json(updatedStudent);
-  } catch (err) {
+  } catch (error) {
     // console.log(err);
     // res.status(500).json({ errorMessage: "trouble updating the student" });
     next(error);
@@ -137,7 +143,7 @@ app.delete("/api/students/:studentId", async (req, res, next) => {
     );
     console.log("here is the deleted student:", deletedStudent);
     res.status(200).json(deletedStudent);
-  } catch (err) {
+  } catch (error) {
     // console.log(err);
     // res.status(500).json({ errorMessage: "trouble deleting the student" });
     next(error);
@@ -153,7 +159,7 @@ app.post("/api/cohorts", async (req, res, next) => {
       console.log("good job", createdCohort);
       res.status(201).json(createdCohort);
     })
-    .catch((err) => {
+    .catch((error) => {
       // console.log(err);
       // res.status(500).json({ errorMessage: "Problem creating cohort" });
       next(error);
@@ -182,7 +188,7 @@ app.get("/api/cohorts/:cohortId", (req, res, next) => {
       console.log("here is one cohort", oneCohort);
       res.status(200).json(oneCohort);
     })
-    .catch((err) => {
+    .catch((error) => {
       // console.log(err);
       // res.status(500).json({ errorMessage: "trouble finding the one cohort" });
       next(error);
@@ -197,7 +203,7 @@ app.put("/api/cohorts/:cohortId", async (req, res, next) => {
     );
     console.log("here is the updated cohort:", updatedCohort);
     res.status(200).json(updatedCohort);
-  } catch (err) {
+  } catch (error) {
     // console.log(err);
     // res.status(500).json({ errorMessage: "trouble updating the cohort" });
     next(error);
@@ -209,7 +215,7 @@ app.delete("/api/cohorts/:cohortId", async (req, res, next) => {
     const deletedCohort = await Cohort.findByIdAndDelete(req.params.cohortId);
     console.log("here is the deleted cohort:", deletedCohort);
     res.status(200).json(deletedCohort);
-  } catch (err) {
+  } catch (error) {
     // console.log(err);
     // res.status(500).json({ errorMessage: "trouble deleting the cohort" });
     next(error);
