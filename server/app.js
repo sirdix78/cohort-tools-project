@@ -1,4 +1,4 @@
-require("dotenv").config()
+require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
@@ -9,7 +9,7 @@ const cors = require("cors");
 const mongoose = require("mongoose"); // Connecting to the Database
 const Cohort = require("./models/cohorts.model");
 const Student = require("./models/students.model");
-const authRoutes = require('./routes/auth.routes');
+const authRoutes = require("./routes/auth.routes");
 
 const {
   errorHandler,
@@ -42,7 +42,7 @@ app.use(cookieParser());
 app.use(cors());
 
 // Mount the auth routes
-app.use('/', authRoutes);
+app.use("/", authRoutes);
 
 // ROUTES - https://expressjs.com/en/starter/basic-routing.html
 // Devs Team - Start working on the routes here:
@@ -199,7 +199,8 @@ app.put("/api/cohorts/:cohortId", async (req, res, next) => {
   try {
     const updatedCohort = await Cohort.findOneAndReplace(
       { _id: req.params.cohortId },
-      req.body
+      req.body,
+      { new: true }
     );
     console.log("here is the updated cohort:", updatedCohort);
     res.status(200).json(updatedCohort);
